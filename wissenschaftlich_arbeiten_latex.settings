@@ -1,0 +1,196 @@
+% --- Vorlage fuer wissenschaftliches Arbeiten in LaTeX
+
+% --- Version 1.0 (17. Juli 2010)
+
+% --- Autor: Christian Merz (chm-software.com)
+
+
+
+          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+          %%                                                      %%
+          %%                   ===============                    %%
+          %%                   !!! ACHTUNG !!!                    %%
+          %%                   ===============                    %%
+          %%                                                      %%
+          %% Diese TEX-Datei ist nicht das Hauptdokument und kann %%
+          %% nicht eigenstaendig kompiliert werden.               %%
+          %%                                                      %%
+          %% Zum Einfuegen Ihrer Daten und Ihres Textes verwenden %%
+          %% Sie bitte wissenschaftlich_arbeiten_latex.tex!       %%
+          %%                                                      %%
+          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+% ==========[ Pakete einbinden ]==========
+
+\usepackage{geometry} % Seitenformat
+\usepackage{fancyhdr} % Modifizierbare Kopf- und Fusszeilen
+\usepackage{ifthen}   % Bedingte Anweisungen
+\usepackage{graphicx} % Grafiken
+\usepackage{color}    % Farben
+\usepackage{titlesec} % Formatierung von Ueberschriften
+\usepackage{makeidx}  % Indizierung des Textes
+
+\makeindex            % Index aktivieren
+
+
+% ==========[ Formateinstellungen ]==========
+
+\geometry{a4paper, % DIN A4 mit angegebenen Raendern
+          top=30mm, left=30mm, right=35mm, bottom=20mm,
+          footskip=10mm, headsep=5mm, bmargin=20mm}
+\headheight 5mm % Hoehe der Kopfzeile
+
+% CKL: auskommentiert - sieht haesslich aus
+% \renewcommand{\rmdefault}{\sfdefault} % Serifenlose Schrift
+
+\parindent 0pt % Einzug der ersten Zeile neuer Absaetze
+
+\setlength{\unitlength}{1mm} % Standard-Einheit
+
+
+% ==========[ Zeichenkodierung und Rechtschreibung ]==========
+
+\usepackage[utf8]{inputenc} % Zeichenkodierung der TEX-Dokumente ist Unicode (UTF8)
+\usepackage[ngerman]{babel} % Neue deutsche Rechtschreibung
+\usepackage[babel,german=quotes]{csquotes}
+
+% ==========[ Hilfsbefehle ]==========
+
+% Schriftgroesse mit konstantem Abstand einstellen
+\newcommand{\schriftGr}[1]{\fontsize{#1}{20pt}\selectfont}
+
+% Seitenzahl des Inhaltsverzeichnisses speichern
+\newcounter{TempPage}
+
+% Leerseite nach dem Inhaltsverzeichnis, falls notwendig
+\newcommand{\leerSeiteInhalt}{\newpage\thispagestyle{empty}%
+\seitenArabisch\setcounter{TempPage}{\thepage}%
+\ifthenelse{\isodd{\theTempPage}}{\stepcounter{TempPage}}{}%
+\ifthenelse{\isodd{\thepage}}{}{~\newpage\thispagestyle{empty}}%
+\setcounter{page}{1}}
+
+% Leerseite vor dem Anhang, falls notwendig
+\newcommand{\leerSeiteAnhang}{%
+\ifthenelse{\isodd{\thepage}}{~\newpage\thispagestyle{empty}}{}%
+\seitenRoemisch\setcounter{page}{\theTempPage}\addcontentsline{toc}{chapter}{Anhang}}
+
+\newcommand{\seitenArabisch}{\renewcommand{\thepage}{\arabic{page}}}
+\newcommand{\seitenRoemisch}{\renewcommand{\thepage}{\Roman{page}}}
+
+% Glossar-Umgebung - Verwendung: \glossarEintrag{Begriff}{Beschreibung}
+\newenvironment{glossar}{\markboth{Glossar}{Glossar}\chapter*{Glossar}%
+\addcontentsline{toc}{chapter}{Glossar}}{}
+\newcommand{\glossarEintrag}[2]{\textbf{#1}\vspace*{2mm}\\#2\vspace*{3mm}\\}
+
+% Abkuerzungs-Umgebung - Verwendung: \abkuerzungEintrag{Kurzform}{Langform}
+\newenvironment{abkuerzung}{\markboth{Abk\"urzungsverzeichnis}{Abk\"urzungsverzeichnis}%
+\chapter*{Abk\"urzungsverzeichnis}%
+\addcontentsline{toc}{chapter}{Abk\"urzungsverzeichnis}%
+\begin{description}}{\end{description}}
+\newcommand{\abkuerzungEintrag}[2]{\item[#1] #2}
+
+% Index ins Inhaltsverzeichnis einfuegen
+\newcommand{\indexInhalt}{\ifthenelse{\isodd{\thepage}}{~\newpage~\newpage}{~\newpage}%
+\addcontentsline{toc}{chapter}{Index}}
+
+
+% ==========[ Gestaltung ]==========
+
+\pagestyle{fancy} % Modifizierbare Kopfzeilen aktivieren
+\renewcommand{\chaptermark}[1]{% 
+\markboth{\thechapter.\ #1}{}} 
+
+\newcommand{\kopfZeilen}{
+\fancyhead{}
+
+\fancyhead[EORH]{\leftmark}
+% \setlength{\skip\footins}{1.0cm}
+
+\fancyfoot{} % Leere Fusszeile
+ \fancyfoot[EOCF]{\thepage}
+}
+
+\kopfZeilen\fancypagestyle{plain}{\kopfZeilen} % Einstellungen setzen
+\renewcommand{\headrulewidth}{0pt} % Keine Linie unter der Kopfzeile
+
+\seitenRoemisch % Seitenzahlen roemisch
+
+\renewcommand\bibname{Quellenverzeichnis} % Titel der Quellen-Liste
+
+\usepackage{url} % URL nutzen, sonst funktioniert das mit Internetquellen nicht
+\bibliographystyle{alphaurl} % Format der Quellen-Liste
+
+% ==========[ Titelseite ]==========
+
+\newcommand{\titelSeiteDaten}[8]{%
+\thispagestyle{empty}
+\color{titelGrau}
+\schriftGr{26pt}\textbf{#1}	
+\vspace{5mm}\\
+\schriftGr{18pt}
+\ifthenelse{\equal{#2}{}}{\vspace{3mm}\\}{%
+zur Erlangung des akademischen Grades\\
+\textbf{#2}
+}%
+\vspace{10mm}\\
+an der\\
+#3
+\vspace{5mm}\\
+im Fachbereich #4\\
+im Studiengang #5
+\vspace{40mm}\\
+\ifthenelse{\equal{#7}{}}{\vspace{5mm}\\}{}
+\color{black}
+\schriftGr{20pt}\textbf{#6}
+\ifthenelse{\equal{#7}{}}{}{%
+\vspace{5mm}\\
+\schriftGr{20pt}#7
+}%
+\ifthenelse{\equal{#8}{}}{}{%
+\vspace{5mm}\\
+\schriftGr{15pt}#8
+}%
+\vspace{40mm}\\
+\ifthenelse{\equal{#7}{}}{\vspace{5mm}\\}{}
+}
+\newcommand{\titelSeiteNamen}[5]{%
+\schriftGr{18pt}Autor:~~\hspace{15.6mm}#1
+\vspace{2mm}\\
+Matrikel-Nr.:~~#2
+\color{titelGrau}
+\vspace{5mm}\\
+\ifthenelse{\equal{#4}{}}{%
+Pr\"ufer:~~\hspace{14.4mm}#3
+}{%
+Erstpr\"ufer:~~\hspace{5.7mm}#3
+\vspace{2mm}\\
+Zweitpr\"ufer:~~\hspace{2.15mm}#4
+}%
+\vspace{5mm}\\
+Abgabe am:~~\hspace{2.2mm}#5
+\color{black}\newpage\thispagestyle{empty}
+}
+
+% CKL: User Stories
+\newcommand{\userstory}[1]{%
+\item \emph{#1}
+}
+
+% ==========[ Farben ]==========
+
+\definecolor{titelGrau}{RGB}{102,102,102}
+
+% Format des Titels von Kapiteln
+\titleformat{\chapter}{\Huge\bfseries\color{titelGrau}}{\thechapter}{12mm}{}
+
+% Format des Titels von Sections
+\titleformat{\section}{\LARGE\bfseries\color{titelGrau}}{\thesection}{12mm}{}
+
+% Format des Titels von Subsections
+\titleformat{\subsection}{\Large\bfseries\color{titelGrau}}{\thesubsection}{12mm}{}
+
+% Format des Titels von Subsubsections
+\titleformat{\subsubsection}{\large\bfseries\color{titelGrau}}{}{0}{}
+
